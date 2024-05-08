@@ -32,9 +32,9 @@ export default () => {
     })
     return Route({
         name: 'app', class: 'container py-4 px-3', async onFirst() {
-            await reloadAppList()
         }, async onLoad() {
             if (!await checkLogin()) return
+            await reloadAppList()
         }
     },
         div({ class: 'hstack mb-4' },
