@@ -34,6 +34,8 @@ export default () => {
         name: 'app', class: 'container py-4 px-3', async onFirst() {
         }, async onLoad() {
             if (!await checkLogin()) return
+            loadingLock.val = false
+            nextPage.val = 0
             await reloadAppList()
         }
     },
