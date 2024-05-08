@@ -31,38 +31,40 @@
 
 ## 快速开始
 
-```bash
-git clone https://github.com/iuroc/wechat-auto-reply.git
-cd wechat-auto-reply
-npm config set registry https://registry.npmmirror.com/
-npm install
-cp backend/src/config.example.mts backend/src/config.mts
-# 在 config.mts 里面配置数据库信息和加密参数
-```
-
-1. 开发环境
+- 执行下面的代码
+    ```bash
+    git clone https://github.com/iuroc/wechat-auto-reply.git
+    cd wechat-auto-reply
+    npm config set registry https://registry.npmmirror.com/
+    npm install
+    cp backend/src/config.example.mts backend/src/config.mts
+    ```
+- 在 `backend/src/config.mts` 中配置数据库信息和加密参数
+- 将 `init.sql` 文件导入 MySQL 数据库
+- 开发环境
     ```bash
     npm run backend:dev:tsc    # 启动 TypeScript 自动编译
     npm run backend:dev:serve  # 启动开发环境 HTTP 服务器
     npm run frontend:dev       # 启动 Vite 前端开发环境
     ```
-2. 生产环境
+- 生产环境
     ```bash
     npm run build
     npm run start
     ```
-3. 环境变量
 
-    |      名称      |       描述          |
-    |      ---       |       ---           |
-    |   ROOT_PASS    |   管理员密码         |
-    |   JWT_KEY      |   JWT 密钥          |
-    |   MYSQL_HOST   |   数据库主机         |
-    |   MYSQL_PORT   |   数据库端口         |
-    |   MYSQL_USER   |   数据库用户名       |
-    |   MYSQL_PASS   |   数据库密码         |
-    |   GPT_BASEURL  |   ChatGPT 接口地址   |
-    |   GPT_APIKEY   |   ChatGPT APIKEY    |
+## 环境变量
+
+|      名称      |       描述          |
+|      ---       |       ---           |
+|   ROOT_PASS    |   管理员密码         |
+|   JWT_KEY      |   JWT 密钥          |
+|   MYSQL_HOST   |   数据库主机         |
+|   MYSQL_PORT   |   数据库端口         |
+|   MYSQL_USER   |   数据库用户名       |
+|   MYSQL_PASS   |   数据库密码         |
+|   GPT_BASEURL  |   ChatGPT 接口地址   |
+|   GPT_APIKEY   |   ChatGPT APIKEY    |
 
 ## 设置关注回复
 
