@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { deleteAppTransaction, insertApp, pool, resetAppToken, selectApp, updateApp } from '../db.mjs'
+import { deleteAppTransaction, insertApp, insertRule, insertTargets, pool, resetAppToken, selectApp, updateApp } from '../db.mjs'
 import { sendError, sendRes } from '../util/res.mjs'
 import { checkJWTMiddleware, getString, makeAppToken } from '../util/main.mjs'
 import { PoolConnection } from 'mysql2/promise'
@@ -14,8 +14,14 @@ router.post('/create', checkJWTMiddleware, async (req, res) => {
         if (appName == '') throw new Error('请输入正确的 appName')
 
         const token = makeAppToken()
+        const appId = await insertApp(conn, appName, token)
 
-        sendRes(res, true, '创建成功', { appId: await insertApp(conn, appName, token), appName, token })
+        const ruleId1 = await insertRule(conn, 0, appId, '[[subscribe]]')
+        await insertTargets(conn, appId, ruleId1, ['欢迎关注🎉'])
+        const ruleId2 = await insertRule(conn, 0, appId, '[[default]]')
+        await insertTargets(conn, appId, ruleId2, ['暂时没有找到结果哦😀'])
+
+        sendRes(res, true, '创建成功', { appId: appId, appName, token })
     } catch (error) {
         sendError(res, error)
     } finally {
