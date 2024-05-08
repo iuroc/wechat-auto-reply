@@ -1,0 +1,4 @@
+/node_modules/
+/backend/js/
+/frontend/dist/
+/backend/src/config.mts
