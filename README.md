@@ -29,7 +29,7 @@
     - 自定义菜单事件 - 点击菜单跳转链接时的事件推送
     - 自定义菜单事件 - 点击菜单拉取消息时的事件推送
     - 上报地理位置事件
-
+- 更多信息请参考：[基础消息能力 / 接收普通消息](https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Receiving_standard_messages.html)
 ## 快速开始
 
 - 执行下面的代码
@@ -74,6 +74,23 @@
 ## 设置无匹配结果时默认回复
 
 点击创建规则，将规则设置为 `[[default]]`，然后设置回复内容即可。
+
+## 高级设置
+
+### 配置微信登录
+
+- 新建一条 `yz` 规则，目标内容为 JSON 字符串，格式如下：
+
+    ```json
+    {
+        "host": "localhost",
+        "port": 3306,
+        "user": "root",
+        "password": "12345678",
+        "database": "wechat_vercode",
+        "table": "wechat_vercode"
+    }
+    ```
 
 ## 相关技术
 
