@@ -39,6 +39,7 @@ router.post('/:appId', async (req, res) => {
         if (!input) throw new Error('请求体不是正确的 XML')
         new MyInputHandler(res, input, appId)
     } catch (error) {
+        console.log((error as any).message)
         if (error instanceof Error) res.send('success')
     }
 })

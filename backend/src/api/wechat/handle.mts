@@ -11,7 +11,7 @@ export class MyInputHandler extends InputHandler {
     }
 
     private selectRule(conn: PoolConnection, content: string) {
-        return selectRule(conn, this.appId, (this.input as InputTextMessage).xml.Content[0])
+        return selectRule(conn, this.appId, content)
     }
 
     /** @override */
@@ -19,7 +19,10 @@ export class MyInputHandler extends InputHandler {
         let conn: PoolConnection | undefined
         try {
             conn = await pool.getConnection()
-            const matchResult = await this.selectRule(conn, (this.input as InputTextMessage).xml.Content[0])
+            if (await this.matchCustomTextRule(conn)) return conn.release()
+
+            const inputContent = (this.input as InputTextMessage).xml.Content[0]
+            const matchResult = await this.selectRule(conn, inputContent)
 
             if (matchResult.length == 0) {
                 // 如果允许使用 ChatGPT，则优先使用
@@ -42,7 +45,6 @@ export class MyInputHandler extends InputHandler {
             const index = Math.floor(Math.random() * matchResult.length)
             const target = matchResult[index].content as string
 
-            if (this.matchCustomTextRule(target)) return conn.release()
             this.res.send(this.makeOutput<OutputTextMessage>({
                 Content: [target],
                 MsgType: ['text']
@@ -86,17 +88,47 @@ export class MyInputHandler extends InputHandler {
      * 
      * @returns 是否匹配成功
      */
-    protected matchCustomTextRule(target: string): boolean {
-        let matchResult = true
+    protected async matchCustomTextRule(conn: PoolConnection): Promise<boolean> {
         const content = (this.input as InputTextMessage).xml.Content[0]
+        if (content.startsWith('dj ')) {
+            const djName = content.slice(3).trim()
+            let outputContent = ''
+            if (djName.length == 0) {
+                outputContent = '短剧名称不能为空'
+            }
+            else {
+                const searchResult = (await fetch(`https://api.hytys.cn/api/?path=movies&page=1&limit=10&name=${djName}`).then(res => res.json()) as { data: { rows: { name: string, createAt: string, link: string }[] } }).data.rows.map(line => {
+                    return line.name + '\n' + line.link + '\n' + new Date(parseInt(line.createAt) * 1000).toLocaleString()
+                })
+                if (searchResult.length == 0) {
+                    outputContent = '暂无搜索结果'
+                } else {
+                    outputContent = searchResult.join('\n\n')
+                }
+            }
+            this.res.send(this.makeOutput<OutputTextMessage>({
+                Content: [outputContent],
+                MsgType: ['text']
+            }))
+            return true
+        }
         switch (content) {
             case 'yz':
+                const target = await this.getRandromMatch(conn)
                 this.yzCustomRule(target)
                 break
             default:
-                matchResult = false
+                return false
         }
-        return matchResult
+        return true
+    }
+
+    async getRandromMatch(conn: PoolConnection) {
+        const inputContent = (this.input as InputTextMessage).xml.Content[0]
+        const match = await this.selectRule(conn, inputContent)
+        const index = Math.floor(Math.random() * match.length)
+        const target = match[index].content as string
+        return target
     }
 
     /** 验证登录，自动向指定的数据表插入和当前微信 ID 关联的 6 位数字验证码 */
