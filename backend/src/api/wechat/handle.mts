@@ -93,7 +93,7 @@ export class MyInputHandler extends InputHandler {
         if (content.startsWith('dj ')) {
             const match = content.match(/^dj\s+(\S+)(?:\s+(\d+))?/) as RegExpMatchArray
             const djName = match[1]
-            const page = match[2] || 2
+            const page = match[2] || 1
             let outputContent = ''
             if (djName.length == 0) {
                 outputContent = '短剧名称不能为空'
@@ -107,7 +107,7 @@ export class MyInputHandler extends InputHandler {
                     outputContent = '暂无搜索结果'
                 } else {
                     outputContent = searchResult.join('\n\n')
-                    outputContent += `当前第${page}页，共${(resData.data.total - 1) / 10 + 1}页`
+                    outputContent += `当前第${page}页，共${Math.floor((resData.data.total - 1) / 10) + 1}页\n您可以通过 [dj 剧名 页码] 来切换分页`
                 }
             }
             this.res.send(this.makeOutput<OutputTextMessage>({
