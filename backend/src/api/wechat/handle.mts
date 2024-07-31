@@ -91,19 +91,23 @@ export class MyInputHandler extends InputHandler {
     protected async matchCustomTextRule(conn: PoolConnection): Promise<boolean> {
         const content = (this.input as InputTextMessage).xml.Content[0]
         if (content.startsWith('dj ')) {
-            const djName = content.slice(3).trim()
+            const match = content.match(/^dj\s+(\S+)(?:\s+(\d+))?/) as RegExpMatchArray
+            const djName = match[1]
+            const page = match[2] || 2
             let outputContent = ''
             if (djName.length == 0) {
                 outputContent = '短剧名称不能为空'
             }
             else {
-                const searchResult = (await fetch(`https://api.hytys.cn/api/?path=movies&page=1&limit=10&name=${djName}`).then(res => res.json()) as { data: { rows: { name: string, createAt: string, link: string }[] } }).data.rows.map(line => {
+                const resData = await fetch(`https://api.hytys.cn/api/?path=movies&page=${page}&limit=10&name=${djName}`).then(res => res.json()) as { data: { rows: { name: string, createAt: string, link: string }[], total: number } }
+                const searchResult = resData.data.rows.map(line => {
                     return line.name + '\n' + line.link + '\n' + new Date(parseInt(line.createAt) * 1000).toLocaleString()
                 })
                 if (searchResult.length == 0) {
                     outputContent = '暂无搜索结果'
                 } else {
                     outputContent = searchResult.join('\n\n')
+                    outputContent += `当前第${page}页，共${(resData.data.total - 1) / 10 + 1}页`
                 }
             }
             this.res.send(this.makeOutput<OutputTextMessage>({
