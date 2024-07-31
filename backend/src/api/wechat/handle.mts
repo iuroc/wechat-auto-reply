@@ -107,7 +107,7 @@ export class MyInputHandler extends InputHandler {
                     outputContent = '暂无搜索结果'
                 } else {
                     outputContent = searchResult.join('\n\n')
-                    outputContent += `当前第${page}页，共${Math.floor((resData.data.total - 1) / 10) + 1}页\n您可以通过 [dj 剧名 页码] 来切换分页`
+                    outputContent += `\n\n当前第${page}页，共${Math.floor((resData.data.total - 1) / 10) + 1}页\n[dj 剧名 页码] 切换分页`
                 }
             }
             this.res.send(this.makeOutput<OutputTextMessage>({
