@@ -99,15 +99,16 @@ export class MyInputHandler extends InputHandler {
                 outputContent = '短剧名称不能为空'
             }
             else {
-                const resData = await fetch(`https://api.hytys.cn/api/?path=movies&page=${page}&limit=10&name=${djName}`).then(res => res.json()) as { data: { rows: { name: string, createAt: string, link: string }[], total: number } }
-                const searchResult = resData.data.rows.map(line => {
-                    return line.name + '\n' + line.link + '\n' + new Date(parseInt(line.createAt) * 1000).toLocaleString()
+                // const resData = await fetch(`https://api.hytys.cn/api/?path=movies&page=${page}&limit=10&name=${djName}`).then(res => res.json()) as { data: { rows: { name: string, createAt: string, link: string }[], total: number } }
+                const resData = await fetch(`https://dj.3v.hk/api/?search=${djName}`).then(res => res.json()) as { data: { name: string, url: string, time: string }[] }
+                const searchResult = resData.data.map(line => {
+                    return line.name + '\n' + line.url + '\n' + new Date(line.time).toLocaleString()
                 })
                 if (searchResult.length == 0) {
                     outputContent = '暂无搜索结果'
                 } else {
                     outputContent = searchResult.join('\n\n')
-                    outputContent += `\n\n当前第${page}页，共${Math.floor((resData.data.total - 1) / 10) + 1}页\n[dj 剧名 页码] 切换分页`
+                    // outputContent += `\n\n当前第${page}页，共${Math.floor((resData.data.total - 1) / 10) + 1}页\n[dj 剧名 页码] 切换分页`
                 }
             }
             this.res.send(this.makeOutput<OutputTextMessage>({
