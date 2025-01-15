@@ -110,6 +110,10 @@ export class MyInputHandler extends InputHandler {
                     outputContent = searchResult.join('\n\n')
                     // outputContent += `\n\n当前第${page}页，共${Math.floor((resData.data.total - 1) / 10) + 1}页\n[dj 剧名 页码] 切换分页`
                 }
+                outputContent = truncateStringToBytes(outputContent, 2048)
+                const newArray = outputContent.split('\n\n')
+                newArray.pop()
+                outputContent = newArray.join('\n\n')
             }
             this.res.send(this.makeOutput<OutputTextMessage>({
                 Content: [outputContent],
@@ -177,4 +181,13 @@ export class MyInputHandler extends InputHandler {
             conn?.end()
         }
     }
+}
+
+
+function truncateStringToBytes(str: string, byteLimit: number) {
+    const encoder = new TextEncoder()
+    const byteArray = encoder.encode(str)
+    const truncatedByteArray = byteArray.slice(0, byteLimit)
+    const decoder = new TextDecoder()
+    return decoder.decode(truncatedByteArray)
 }

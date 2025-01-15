@@ -36,22 +36,22 @@
   ```bash
   git clone https://github.com/iuroc/wechat-auto-reply.git
   cd wechat-auto-reply
-  npm config set registry https://registry.npmmirror.com/
-  npm install
+  # pnpm config set registry https://registry.npmmirror.com/
+  pnpm install
   cp backend/src/config.example.mts backend/src/config.mts
   ```
 - 在 `backend/src/config.mts` 中配置数据库信息和加密参数
 - 将 `init.sql` 文件导入 MySQL 数据库
 - 开发环境
   ```bash
-  npm run backend:dev:tsc    # 启动 TypeScript 自动编译
-  npm run backend:dev:serve  # 启动开发环境 HTTP 服务器
-  npm run frontend:dev       # 启动 Vite 前端开发环境
+  pnpm run backend:dev:tsc    # 启动 TypeScript 自动编译
+  pnpm run backend:dev:serve  # 启动开发环境 HTTP 服务器
+  pnpm run frontend:dev       # 启动 Vite 前端开发环境
   ```
 - 生产环境
   ```bash
-  npm run build
-  npm run start
+  pnpm run build
+  pnpm run start
   ```
 
 ## 环境变量
