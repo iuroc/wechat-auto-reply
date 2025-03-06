@@ -116,11 +116,11 @@ export class MyInputHandler extends InputHandler {
                 } else {
                     outputContent = searchResult.join('\n\n')
                     // outputContent += `\n\n当前第${page}页，共${Math.floor((resData.data.total - 1) / 10) + 1}页\n[dj 剧名 页码] 切换分页`
+                    outputContent = truncateStringToBytes(outputContent, 2048)
+                    const newArray = outputContent.split('\n\n')
+                    newArray.pop()
+                    outputContent = newArray.join('\n\n')
                 }
-                outputContent = truncateStringToBytes(outputContent, 2048)
-                const newArray = outputContent.split('\n\n')
-                newArray.pop()
-                outputContent = newArray.join('\n\n')
             }
             this.res.send(this.makeOutput<OutputTextMessage>({
                 Content: [outputContent],
