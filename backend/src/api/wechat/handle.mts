@@ -28,7 +28,14 @@ export class MyInputHandler extends InputHandler {
                 // 如果允许使用 ChatGPT，则优先使用
                 if (config.gptUse) {
                     conn.release()
-                    return config.gptUse && this.gptHandler()
+                    try {
+                        return config.gptUse && this.gptHandler()
+                    } catch {
+                        return this.res.send(this.makeOutput<OutputTextMessage>({
+                            MsgType: ['text'],
+                            Content: ['您说的我暂时无法理解哦']
+                        }))
+                    }
                 }
                 // 不能使用 ChatGPT，则尝试获取默认回复
                 const defaultResult = await selectRule(conn, this.appId, '[[default]]')
