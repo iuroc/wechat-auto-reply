@@ -108,7 +108,7 @@ export class MyInputHandler extends InputHandler {
             else {
                 // const resData = await fetch(`https://api.hytys.cn/api/?path=movies&page=${page}&limit=10&name=${djName}`).then(res => res.json()) as { data: { rows: { name: string, createAt: string, link: string }[], total: number } }
                 const resData = await fetch(`https://dj.3v.hk/api/?search=${djName}`).then(res => res.json()) as { data: { name: string, url: string, time: string }[] }
-                const searchResult = resData.data.map(line => {
+                const searchResult = (resData.data || []).map(line => {
                     return line.name + '\n' + line.url + '\n' + new Date(line.time).toLocaleString()
                 })
                 if (searchResult.length == 0) {
